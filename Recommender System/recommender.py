@@ -194,9 +194,6 @@ class Recommender:
         recall_movie_ids = self.recall_model.get_recall_items(user_id, top_k=50)
 
         if not recall_movie_ids:
-            print(
-                f"【Recommender】用户 {user_id} 在召回阶段没有候选，使用冷启动策略兜底。"
-            )
             return self.cold_start_top_movies[:top_n]
 
         # 3. 排序层，使用 LR 模型打分

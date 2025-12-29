@@ -51,7 +51,7 @@ def precision_at_k(
 
     precisions: List[float] = []
 
-    print("\n========== 开始计算 Precision@{} ==========".format(k))
+    print("\n【calculate】开始计算 Precision@{}".format(k))
 
     for user_id, liked_list in user_liked_movies.items():
         liked_set = set(liked_list)
@@ -75,6 +75,7 @@ def precision_at_k(
     avg_precision = float(np.mean(precisions))
     print("【Eval】有效用户数: {}".format(len(precisions)))
     print("【Eval】Precision@{} = {:.4f}".format(k, avg_precision))
+    print("【calculate】Precision@{} 计算完成".format(k))
 
     return avg_precision
 

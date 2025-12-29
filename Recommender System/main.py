@@ -43,10 +43,10 @@ def main() -> None:
     # 5. 命令行交互 Demo
     print("\n========== 进入命令行推荐 Demo ==========")
     print("提示：输入用户 ID（1~943），回车后输出 Top-5 推荐电影 ID 列表。")
-    print("      输入 q 退出程序。")
+    print("     输入 q 退出程序。")
 
     while True:
-        user_input = input("\n请输入用户 ID（或输入 q 退出）：").strip()
+        user_input = input("\n请输入用户 ID（或输入q退出）：").strip()
         if user_input.lower() == "q":
             print("退出程序，再见！")
             break
