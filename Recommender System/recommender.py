@@ -1,7 +1,6 @@
 """
 recommender.py
---------------
-推荐系统主类：把整个流程“串”起来。
+--推荐系统主类：把整个流程“串”起来。
 
 包含：
 1. 数据加载与特征工程
@@ -73,14 +72,19 @@ class Recommender:
         loader = DataLoader(self.data_dir)
         self.user_raw_df, self.item_raw_df, self.interaction_raw_df = loader.load_all()
 
-        # 构建画像表
+        # 构建用户画像表（不需要评分数据）
         self.user_profile = build_user_profile(self.user_raw_df)
-        self.item_profile = build_item_profile(self.item_raw_df)
-        self.interaction = build_interaction(self.interaction_raw_df)
 
-        # 时间切分训练 / 测试
+        # 构建行为表并切分训练/测试集
+        self.interaction = build_interaction(self.interaction_raw_df)
         self.train_interaction, self.test_interaction = train_test_split_by_time(
             self.interaction, test_ratio=0.2
+        )
+
+        # 使用训练集数据计算收缩评分（避免测试集信息泄露到特征中）
+        print("【特征工程】计算电影收缩后平均评分（Shrinkage Estimation）...")
+        self.item_profile = build_item_profile(
+            self.item_raw_df, interaction_df=self.train_interaction
         )
 
         print(f"用户画像表形状: {self.user_profile.shape}")
@@ -211,6 +215,40 @@ class Recommender:
         movie_prob_pairs.sort(key=lambda x: x[1], reverse=True)
         top_movies = [mid for mid, _ in movie_prob_pairs[:top_n]]
         return top_movies
+
+    def recommend_with_scores(self, user_id: int, top_n: int = 5) -> List[Tuple[int, float]]:
+        """
+        推荐接口（带预测评分）：为指定用户返回 Top-N 电影 ID 列表及其预测评分。
+
+        :return: [(movie_id, score), ...] 列表，按 score 从高到低排序
+        """
+        # 1. 冷启动判断
+        if self._is_new_user(user_id):
+            print(f"【Recommender】用户 {user_id} 是新用户，使用冷启动策略推荐。")
+            # 冷启动情况下，返回固定分数 0.5（表示中等偏好）
+            return [(mid, 0.5) for mid in self.cold_start_top_movies[:top_n]]
+
+        # 2. 老用户 => 召回候选电影
+        recall_movie_ids = self.recall_model.get_recall_items(user_id, top_k=50)
+
+        if not recall_movie_ids:
+            # 召回失败，使用冷启动
+            return [(mid, 0.5) for mid in self.cold_start_top_movies[:top_n]]
+
+        # 3. 排序层，使用 LR 模型打分
+        movie_prob_pairs = self.ranking_model.predict_proba_for_pairs(
+            user_id=user_id,
+            movie_ids=recall_movie_ids,
+        )
+        if not movie_prob_pairs:
+            print(
+                f"【Recommender】用户 {user_id} 在排序阶段无有效候选，使用冷启动策略兜底。"
+            )
+            return [(mid, 0.5) for mid in self.cold_start_top_movies[:top_n]]
+
+        # 4. 按概率从大到小排序，取前 top_n
+        movie_prob_pairs.sort(key=lambda x: x[1], reverse=True)
+        return movie_prob_pairs[:top_n]
 
     # ------------------------------------------------------------------
     # 提供训练 / 测试行为表给评估模块使用

@@ -1,7 +1,6 @@
 """
 recall_cf.py
-------------
-召回层（Recall）：基于物品的协同过滤（Item-based Collaborative Filtering）。
+--召回层（Recall）：基于物品的协同过滤（Item-based Collaborative Filtering）。
 
 核心目标：
     对于每个用户，从所有电影中快速“召回”一小部分候选电影（例如 50 部），

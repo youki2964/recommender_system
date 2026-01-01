@@ -1,11 +1,9 @@
 """
 evaluation.py
--------------
-离线评估模块：实现 Precision@K（默认 K=5）的计算。
+--离线评估模块：实现 Precision@K（默认 K=5）的计算。
 
-业务含义（非常重要，适合答辩讲解）：
---------------------------------
-对某个用户 u：
+业务含义：
+--对某个用户 u：
     - 模型给出一份推荐列表 R_u（例如 Top-5）
     - 在测试集的“真实未来行为”中，用户真正喜欢的电影集合为 L_u
     - Precision@5(u) = |R_u ∩ L_u| / 5
@@ -36,7 +34,7 @@ def precision_at_k(
     :return: 平均 Precision@K
     """
     # 1. 为每个用户构建“在测试集中真实喜欢的电影集合”
-    #    这里仍然使用 rating >= 4 表示“喜欢”
+    #    rating >= 4 表示“喜欢”
     user_liked_movies: Dict[int, List[int]] = {}
 
     for uid, hist in test_interaction.groupby("user_id"):

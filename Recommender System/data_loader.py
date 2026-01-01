@@ -1,7 +1,6 @@
 """
 data_loader.py
---------------
-数据读取与基础清洗模块。
+--数据读取与基础清洗模块。
 
 负责从 data/ 目录中读取 MovieLens 100k 的三个核心文件：
     - u.user  用户信息
@@ -19,28 +18,22 @@ import pandas as pd
 class DataLoader:
     """
     数据加载类。
-
     使用方法示例：
         loader = DataLoader(data_dir="data")
         user_raw, item_raw, interaction_raw = loader.load_all()
     """
-
     def __init__(self, data_dir: str = "ml-100k") -> None:
         """
         :param data_dir: 存放 u.user / u.item / u.data 的目录名
         """
         self.data_dir = data_dir
 
-    # ------------------------------------------------------------------
     # 读取三个原始数据文件
-    # ------------------------------------------------------------------
     def load_user_data(self) -> pd.DataFrame:
         """
         读取 u.user
-
         原始格式（以竖线 | 分隔）：
             user id | age | gender | occupation | zip code
-
         返回：包含上述列的 DataFrame（列名做了显式命名）
         """
         user_cols = ["user_id", "age", "gender", "occupation", "zip_code"]
@@ -57,11 +50,9 @@ class DataLoader:
     def load_item_data(self) -> pd.DataFrame:
         """
         读取 u.item
-
         原始格式（以竖线 | 分隔）：
             movie id | movie title | release date | video release date |
             IMDb URL | unknown | Action | Adventure | ... | Western
-
         最后 19 列是电影类型的 one-hot。
         """
         genre_cols = [
@@ -93,7 +84,6 @@ class DataLoader:
     def load_interaction_data(self) -> pd.DataFrame:
         """
         读取 u.data
-
         原始格式（以制表符 \t 分隔）：
             user id \t item id \t rating \t timestamp
         """
@@ -108,13 +98,10 @@ class DataLoader:
         )
         return df
 
-    # ------------------------------------------------------------------
     # 一次性读取全部
-    # ------------------------------------------------------------------
     def load_all(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
         一次性读取三个原始表：
-
         :return: (user_raw_df, item_raw_df, interaction_raw_df)
         """
         user_df = self.load_user_data()

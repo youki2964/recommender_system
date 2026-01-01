@@ -1,7 +1,6 @@
 """
 main.py
--------
-命令行 Demo 入口。
+--命令行 Demo 入口。
 
 目标：
 1. 一键运行推荐系统全流程：
@@ -43,10 +42,10 @@ def main() -> None:
     # 5. 命令行交互 Demo
     print("\n========== 进入命令行推荐 Demo ==========")
     print("提示：输入用户 ID（1~943），回车后输出 Top-5 推荐电影 ID 列表。")
-    print("     输入 q 退出程序。")
+    print("      输入 q 退出程序。")
 
     while True:
-        user_input = input("\n请输入用户 ID（或输入q退出）：").strip()
+        user_input = input("\n请输入用户 ID（或输入 q 退出）：").strip()
         if user_input.lower() == "q":
             print("退出程序，再见！")
             break
@@ -58,12 +57,13 @@ def main() -> None:
             print("输入不是有效的整数，请重新输入。")
             continue
 
-        # 调用推荐接口
-        recommended_ids = rec.recommend(user_id, top_n=5)
+        # 调用推荐接口（带预测评分）
+        recommended_with_scores = rec.recommend_with_scores(user_id, top_n=5)
 
         print(f"为用户 {user_id} 推荐的 Top-5 电影 ID 列表：")
-        if recommended_ids:
-            print(recommended_ids)
+        if recommended_with_scores:
+            for i, (movie_id, score) in enumerate(recommended_with_scores, 1):
+                print(f" {i}. 电影ID: {movie_id:4d} （CTR为{score:.4f}）")
         else:
             print("无法生成推荐结果。")
 
