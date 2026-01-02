@@ -1,7 +1,6 @@
 """
 ranking_model.py
-----------------
-排序层（Ranking）：使用 Logistic Regression（逻辑回归）模型，对
+--排序层（Ranking）：使用 Logistic Regression（逻辑回归）模型，对
 “用户-电影”对进行二分类预测，输出一个 0~1 之间的概率，表示：
 
     该用户喜欢 / 点击这部电影的概率。
@@ -236,5 +235,6 @@ class LRRankingModel:
         probs = self.model.predict_proba(X)[:, 1]
 
         return list(zip(valid_movie_ids, probs))
+
 
 

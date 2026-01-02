@@ -10,6 +10,7 @@ recommender.py
 5. 对外接口：recommend(user_id, top_n=5)
 """
 
+import os
 from typing import List, Tuple
 
 import pandas as pd
@@ -260,5 +261,6 @@ class Recommender:
         返回训练集与测试集行为表，用于离线评估。
         """
         return self.train_interaction, self.test_interaction
+
 
 

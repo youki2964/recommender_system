@@ -1,0 +1,16 @@
+# 项目依赖包
+# 安装方式：pip install -r requirements.txt
+
+# 数据处理
+pandas>=1.3.0
+
+# 数值计算
+numpy>=1.21.0
+
+# 科学计算（用于稀疏矩阵）
+scipy>=1.7.0
+
+# 机器学习库（用于余弦相似度和逻辑回归）
+scikit-learn>=1.0.0
+
+
